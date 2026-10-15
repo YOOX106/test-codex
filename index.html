@@ -1,1 +1,895 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Déclic — Mes révisions</title>
 
+<style>
+:root {
+  --purple: #7660cf;
+  --ink: #2c2840;
+  --muted: #858090;
+  --line: #eeebf3;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: #fcfbf8;
+  color: var(--ink);
+  font-family: Arial, sans-serif;
+}
+button, input, textarea, select { font: inherit; }
+button { cursor: pointer; }
+button:focus-visible, input:focus-visible,
+textarea:focus-visible, select:focus-visible {
+  outline: 3px solid #c3b5ef;
+  outline-offset: 3px;
+}
+aside {
+  position: fixed;
+  inset: 0 auto 0 0;
+  width: 220px;
+  padding: 32px 20px;
+  background: white;
+  border-right: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+}
+.logo {
+  font-size: 32px;
+  font-weight: bold;
+  letter-spacing: -1px;
+  margin-bottom: 45px;
+}
+.logo span { color: var(--purple); }
+.eyebrow {
+  font-size: 10px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  color: var(--muted);
+}
+nav { margin-top: 15px; }
+.nav {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  margin-bottom: 7px;
+  border: none;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--muted);
+  text-align: left;
+}
+.nav.active {
+  background: #eee9fa;
+  color: var(--purple);
+  font-weight: bold;
+}
+.tip {
+  margin-top: auto;
+  padding: 18px;
+  background: #faf6ec;
+  border-radius: 12px;
+  font-size: 13px;
+  line-height: 1.7;
+}
+.tip span {
+  display: block;
+  color: #b79454;
+  font-size: 28px;
+}
+.tip p { color: #938872; font-size: 12px; }
+.storage {
+  margin-top: 22px;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.6;
+}
+main { margin-left: 220px; padding: 0 45px; }
+header {
+  display: flex;
+  justify-content: space-between;
+  padding: 25px 0;
+  border-bottom: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 10px;
+}
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 38px 0;
+}
+.hero .eyebrow { color: var(--purple); }
+h1 {
+  font-size: clamp(28px, 3.5vw, 43px);
+  line-height: 1.25;
+  letter-spacing: -1.5px;
+  margin: 17px 0;
+}
+h1 span { color: var(--purple); }
+.hero p:last-child {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.8;
+}
+.art {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 190px;
+  height: 170px;
+  background: #f0ebfa;
+  border-radius: 45%;
+  font-size: 80px;
+  transform: rotate(-9deg);
+}
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  margin-bottom: 35px;
+}
+.stat {
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 20px;
+}
+.stat strong {
+  display: block;
+  font-size: 26px;
+  margin-bottom: 7px;
+  color: var(--purple);
+}
+.stat span { color: var(--muted); font-size: 12px; }
+.section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+}
+h2 { font-size: 23px; margin: 0 0 9px; }
+.description { color: var(--muted); font-size: 12px; }
+.primary {
+  border: 0;
+  border-radius: 8px;
+  padding: 12px 17px;
+  background: var(--purple);
+  color: white;
+  font-size: 12px;
+}
+.primary:hover { background: #624bb8; }
+.tools {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 15px;
+  margin: 24px 0;
+}
+.filters { display: flex; flex-wrap: wrap; gap: 6px; }
+.filters button {
+  border: 0;
+  background: transparent;
+  border-radius: 7px;
+  padding: 9px 11px;
+  font-size: 11px;
+  color: var(--muted);
+}
+.filters button.selected { color: var(--purple); background: #eee9fa; }
+.search {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px;
+  background: white;
+  font-size: 12px;
+  min-width: 190px;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+.lesson {
+  display: flex;
+  flex-direction: column;
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  padding: 21px;
+  min-height: 240px;
+  transition: transform .2s, box-shadow .2s;
+}
+.lesson:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px #30213e0a;
+}
+.card-top { display: flex; justify-content: space-between; align-items: center; }
+.icon {
+  width: 43px;
+  height: 43px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  font-size: 23px;
+}
+.tag { padding: 5px 8px; border-radius: 6px; font-size: 9px; }
+.lesson h3 { font-size: 16px; margin: 20px 0 10px; }
+.lesson p { color: var(--muted); font-size: 12px; line-height: 1.7; }
+.card-bottom {
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  color: var(--muted);
+}
+.read {
+  border: none;
+  background: none;
+  color: var(--purple);
+  font-size: 12px;
+  padding: 5px;
+  font-weight: bold;
+}
+.done { color: #5c9573; }
+.empty { text-align: center; padding: 45px 15px; color: var(--muted); }
+.study { max-width: 620px; margin: 30px auto; text-align: center; }
+.flashcard {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 25px;
+  width: 100%;
+  min-height: 250px;
+  padding: 30px;
+  border: 1px solid #ded4f1;
+  border-radius: 16px;
+  background: #f2edfa;
+  font-size: 23px;
+  color: var(--ink);
+}
+.flashcard small { font-size: 12px; color: var(--muted); }
+.study-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-top: 18px;
+}
+.study-controls button {
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: white;
+  font-size: 12px;
+}
+.study-controls small { color: var(--muted); font-size: 11px; }
+.quiz-answer {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  margin: 20px 0;
+  border: 1px solid #dcd3ed;
+  border-radius: 8px;
+}
+.feedback {
+  padding: 15px;
+  background: #eee9fa;
+  border-radius: 8px;
+  line-height: 1.7;
+}
+footer {
+  text-align: center;
+  padding: 35px 0;
+  font-size: 11px;
+  color: var(--muted);
+}
+dialog {
+  width: min(540px, 92vw);
+  padding: 25px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  color: var(--ink);
+}
+dialog::backdrop { background: #29213966; backdrop-filter: blur(3px); }
+.dialog-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.close {
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  font-size: 23px;
+  color: var(--muted);
+  background: #f3eff9;
+}
+.editor label { display: block; font-size: 12px; margin-bottom: 15px; }
+.editor input, .editor textarea, .editor select {
+  display: block;
+  width: 100%;
+  margin-top: 7px;
+  padding: 11px;
+  border: 1px solid #ded8e9;
+  border-radius: 7px;
+  background: #fdfcfe;
+}
+textarea { resize: vertical; }
+.lesson-body { white-space: pre-wrap; line-height: 1.9; color: #716b7e; }
+[hidden] { display: none !important; }
+@media (max-width: 1100px) {
+  .grid { grid-template-columns: repeat(2, 1fr); }
+  main { padding: 0 28px; }
+  .art { width: 140px; height: 140px; font-size: 65px; }
+}
+@media (max-width: 700px) {
+  aside {
+    position: relative;
+    width: 100%;
+    padding: 18px;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .logo { font-size: 27px; margin-bottom: 0; }
+  aside > .eyebrow, .tip, .storage { display: none; }
+  nav { display: flex; gap: 5px; }
+  .nav { font-size: 11px; padding: 10px 5px; text-align: center; margin: 0; }
+  main { margin: 0; padding: 0 18px; }
+  header { font-size: 8px; }
+  .hero { padding: 25px 0; }
+  .art { display: none; }
+  .stats { gap: 8px; }
+  .stat { padding: 15px 10px; }
+  .stat strong { font-size: 23px; }
+  .stat span { font-size: 10px; }
+  h2 { font-size: 20px; }
+  .description { font-size: 10px; }
+  .primary { padding: 11px; font-size: 11px; }
+  .grid { grid-template-columns: 1fr; }
+  .search { width: 100%; }
+  .filters button { font-size: 10px; padding: 8px; }
+}
+</style>
+</head>
+
+<body>
+<aside>
+  <div class="logo"><span>✳</span> déclic</div>
+  <p class="eyebrow">MON ESPACE</p>
+
+  <nav aria-label="Navigation principale">
+    <button class="nav active" data-view="lessons">▦ Mes leçons</button>
+    <button class="nav" data-view="cards">▱ Cartes mémoire</button>
+    <button class="nav" data-view="quiz">◎ Quiz express</button>
+  </nav>
+
+  <div class="tip">
+    <span>✧</span>
+    <strong>Un petit pas chaque jour.</strong>
+    <p>15 minutes de révision, beaucoup de progrès.</p>
+  </div>
+  <p class="storage" id="storage-status">
+    Tes leçons et ta progression sont sauvegardées dans ce navigateur.
+  </p>
+</aside>
+
+<main>
+  <header>
+    <span>MON CARNET DE RÉVISION</span>
+    <span id="date"></span>
+  </header>
+
+  <section class="hero">
+    <div>
+      <p class="eyebrow">APPRENDRE À SON RYTHME</p>
+      <h1>Les petits efforts font<br>les grandes <span>réussites.</span></h1>
+      <p>Retrouve tes leçons, entraîne ta mémoire et avance à ton rythme.</p>
+    </div>
+    <div class="art" aria-hidden="true">📚</div>
+  </section>
+
+  <section class="stats" aria-label="Ma progression">
+    <div class="stat">
+      <strong id="lesson-count">0</strong>
+      <span>Leçons à explorer</span>
+    </div>
+    <div class="stat">
+      <strong id="done-count">0</strong>
+      <span>Leçons révisées</span>
+    </div>
+    <div class="stat">
+      <strong id="progress">0 %</strong>
+      <span>De belles avancées</span>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <div>
+        <h2 id="section-title">Mes leçons</h2>
+        <p class="description" id="section-description">
+          Un peu de curiosité, une leçon à la fois.
+        </p>
+      </div>
+      <button class="primary" id="add">＋ Ajouter une leçon</button>
+    </div>
+
+    <div class="tools" id="lesson-tools">
+      <div class="filters" id="filters">
+        <button class="selected" data-filter="Toutes">Toutes les matières</button>
+        <button data-filter="Mathématiques">Mathématiques</button>
+        <button data-filter="Français">Français</button>
+        <button data-filter="Sciences">Sciences</button>
+        <button data-filter="Histoire">Histoire</button>
+      </div>
+      <input class="search" id="search" type="search"
+        placeholder="Rechercher une leçon…" aria-label="Rechercher une leçon">
+    </div>
+
+    <div id="content"></div>
+  </section>
+
+  <footer>Fais de la place à ce que tu vas apprendre. ✳</footer>
+</main>
+
+<dialog id="editor">
+  <form class="editor" id="lesson-form">
+    <div class="dialog-top">
+      <h2>Une nouvelle leçon</h2>
+      <button type="button" class="close" aria-label="Fermer">×</button>
+    </div>
+
+    <label>Titre
+      <input name="title" required maxlength="100" placeholder="Ex. Les fractions">
+    </label>
+
+    <label>Matière
+      <select name="subject">
+        <option>Mathématiques</option>
+        <option>Français</option>
+        <option>Sciences</option>
+        <option>Histoire</option>
+      </select>
+    </label>
+
+    <label>Les points à retenir
+      <textarea name="body" required rows="5" placeholder="Écris ton résumé…"></textarea>
+    </label>
+
+    <label>Question de révision
+      <input name="question" required placeholder="Une question sur cette leçon">
+    </label>
+
+    <label>Réponse
+      <input name="answer" required placeholder="La réponse à retenir">
+    </label>
+
+    <button type="submit" class="primary">Enregistrer ma leçon</button>
+  </form>
+</dialog>
+
+<dialog id="reader">
+  <div class="dialog-top">
+    <span class="eyebrow">À TOI DE JOUER</span>
+    <button class="close" aria-label="Fermer">×</button>
+  </div>
+  <div id="reader-body"></div>
+</dialog>
+
+<script>
+const initialLessons = [
+  {
+    id: "1",
+    subject: "Mathématiques",
+    title: "Les fractions, tout simplement",
+    body: "Une fraction représente une partie d’un tout.\n\nLe numérateur indique le nombre de parts prises. Le dénominateur indique le nombre total de parts égales.\n\nPour additionner deux fractions, on les écrit avec le même dénominateur.\nExemple : 1/4 + 2/4 = 3/4.",
+    question: "Dans la fraction 3/4, quel est le dénominateur ?",
+    answer: "4"
+  },
+  {
+    id: "2",
+    subject: "Français",
+    title: "Les temps du récit",
+    body: "L’imparfait décrit une situation ou une habitude passée.\n\nLe passé simple exprime une action achevée au premier plan du récit.\n\nLe plus-que-parfait exprime une action antérieure à une autre action passée.\n\nExemple : Il marchait quand il aperçut la maison.",
+    question: "Quel temps utilise-t-on pour décrire une habitude passée ?",
+    answer: "L’imparfait"
+  },
+  {
+    id: "3",
+    subject: "Sciences",
+    title: "Le cycle de l’eau",
+    body: "Sous l’effet du soleil, l’eau s’évapore.\n\nLa vapeur se refroidit et se condense en gouttelettes qui forment les nuages.\n\nL’eau retombe sous forme de précipitations, puis ruisselle ou s’infiltre dans le sol.",
+    question: "Comment appelle-t-on le passage de l’eau liquide à la vapeur ?",
+    answer: "L’évaporation"
+  },
+  {
+    id: "4",
+    subject: "Histoire",
+    title: "La Révolution française",
+    body: "La Révolution française commence en 1789.\n\nLe 14 juillet, la Bastille est prise.\n\nLa Déclaration des droits de l’homme et du citoyen est adoptée le 26 août 1789.\n\nLa République est proclamée en 1792.",
+    question: "En quelle année commence la Révolution française ?",
+    answer: "1789"
+  },
+  {
+    id: "5",
+    subject: "Mathématiques",
+    title: "Le théorème de Pythagore",
+    body: "Dans un triangle rectangle, le carré de l’hypoténuse est égal à la somme des carrés des deux autres côtés.\n\nSi c est l’hypoténuse : a² + b² = c².\n\nPour des côtés de 3 et 4 unités : c² = 9 + 16 = 25, donc c = 5.",
+    question: "Quelle est l’hypoténuse si les deux autres côtés mesurent 3 et 4 ?",
+    answer: "5"
+  },
+  {
+    id: "6",
+    subject: "Sciences",
+    title: "La photosynthèse",
+    body: "Les végétaux chlorophylliens utilisent l’énergie lumineuse pour produire de la matière organique.\n\nIls absorbent de l’eau et du dioxyde de carbone (CO₂) et libèrent du dioxygène (O₂).\n\nLa photosynthèse se déroule dans les chloroplastes.",
+    question: "Quel gaz est libéré pendant la photosynthèse ?",
+    answer: "Le dioxygène"
+  }
+];
+
+const themes = {
+  "Mathématiques": { bg: "#eeeafa", color: "#8870c7", icon: "∑" },
+  "Français": { bg: "#fcf0e7", color: "#bc8964", icon: "Aa" },
+  "Sciences": { bg: "#eaf2ed", color: "#6e9c81", icon: "♧" },
+  "Histoire": { bg: "#f8eddc", color: "#ad894e", icon: "⌛" }
+};
+
+const $ = selector => document.querySelector(selector);
+
+function escapeHTML(value) {
+  const replacements = {
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  };
+  return String(value).replace(/[&<>"']/g, char => replacements[char]);
+}
+
+let lessons = initialLessons.map(lesson => ({ ...lesson }));
+let done = [];
+let view = "lessons";
+let filter = "Toutes";
+let query = "";
+let index = 0;
+let flipped = false;
+
+function storageWarning() {
+  $("#storage-status").textContent =
+    "Sauvegarde indisponible : tes changements restent dans cette session.";
+}
+
+try {
+  const stored = localStorage.getItem("declic-revisions-v1");
+  if (stored) {
+    const saved = JSON.parse(stored);
+    const valid = saved &&
+      Array.isArray(saved.lessons) &&
+      Array.isArray(saved.done) &&
+      saved.lessons.every(lesson =>
+        lesson &&
+        ["id", "subject", "title", "body", "question", "answer"]
+          .every(key => typeof lesson[key] === "string") &&
+        Object.hasOwn(themes, lesson.subject)
+      );
+
+    if (valid) {
+      lessons = saved.lessons;
+      done = saved.done.filter(id => typeof id === "string");
+    } else {
+      storageWarning();
+    }
+  }
+} catch {
+  storageWarning();
+}
+
+function save() {
+  try {
+    localStorage.setItem(
+      "declic-revisions-v1",
+      JSON.stringify({ lessons, done })
+    );
+  } catch {
+    storageWarning();
+    alert("La sauvegarde est indisponible. Garde cette page ouverte pour conserver tes changements pendant cette session.");
+  }
+}
+
+$("#date").textContent = new Intl.DateTimeFormat("fr-FR", {
+  weekday: "long",
+  day: "numeric",
+  month: "long"
+}).format(new Date());
+
+function render() {
+  const revised = lessons.filter(lesson => done.includes(lesson.id)).length;
+
+  $("#lesson-count").textContent = lessons.length;
+  $("#done-count").textContent = revised;
+  $("#progress").textContent =
+    (lessons.length ? Math.round(revised / lessons.length * 100) : 0) + " %";
+
+  $("#lesson-tools").hidden = view !== "lessons";
+  $("#add").hidden = view !== "lessons";
+
+  const titles = {
+    lessons: "Mes leçons",
+    cards: "Cartes mémoire",
+    quiz: "Quiz express"
+  };
+
+  const descriptions = {
+    lessons: "Un peu de curiosité, une leçon à la fois.",
+    cards: "Essaie de répondre, puis retourne la carte.",
+    quiz: "Teste tes connaissances, sans pression."
+  };
+
+  $("#section-title").textContent = titles[view];
+  $("#section-description").textContent = descriptions[view];
+
+  if (view !== "lessons") {
+    renderStudy();
+    return;
+  }
+
+  const filtered = lessons.filter(lesson =>
+    (filter === "Toutes" || lesson.subject === filter) &&
+    (lesson.title + " " + lesson.body)
+      .toLocaleLowerCase("fr")
+      .includes(query)
+  );
+
+  if (!filtered.length) {
+    $("#content").innerHTML =
+      '<p class="empty">Aucune leçon trouvée. Essaie une autre recherche ou ajoute une leçon.</p>';
+    return;
+  }
+
+  $("#content").innerHTML = '<div class="grid">' +
+    filtered.map(lesson => {
+      const theme = themes[lesson.subject];
+      const revised = done.includes(lesson.id);
+
+      return `
+        <article class="lesson">
+          <div class="card-top">
+            <span class="icon"
+              style="background:${theme.bg};color:${theme.color}">
+              ${theme.icon}
+            </span>
+            <span class="tag"
+              style="background:${theme.bg};color:${theme.color}">
+              ${escapeHTML(lesson.subject)}
+            </span>
+          </div>
+          <h3>${escapeHTML(lesson.title)}</h3>
+          <p>
+            ${escapeHTML(lesson.body.slice(0, 95))}
+            ${lesson.body.length > 95 ? "…" : ""}
+          </p>
+          <div class="card-bottom">
+            <span class="${revised ? "done" : ""}">
+              ${revised ? "✓ Révisée" : "◷ À découvrir"}
+            </span>
+            <button class="read" data-read="${escapeHTML(lesson.id)}">
+              Réviser →
+            </button>
+          </div>
+        </article>
+      `;
+    }).join("") + "</div>";
+}
+
+function normalizeAnswer(value) {
+  return value
+    .trim()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/^(le |la |les |l['’])/, "")
+    .replace(/[^a-z0-9]/g, "");
+}
+
+function renderStudy() {
+  if (!lessons.length) {
+    $("#content").innerHTML =
+      '<p class="empty">Ajoute une leçon pour commencer.</p>';
+    return;
+  }
+
+  index = (index + lessons.length) % lessons.length;
+  const lesson = lessons[index];
+
+  const exercise = view === "cards" ? `
+    <button class="flashcard" id="flip">
+      <span>${escapeHTML(flipped ? lesson.answer : lesson.question)}</span>
+      <small>
+        ${flipped
+          ? "La réponse · Clique pour revoir la question"
+          : "Clique pour découvrir la réponse ↻"}
+      </small>
+    </button>
+  ` : `
+    <h3>${escapeHTML(lesson.question)}</h3>
+    <form id="quiz-form">
+      <input id="answer" class="quiz-answer"
+        aria-label="Ta réponse" placeholder="Ta réponse…"
+        required autocomplete="off">
+      <button class="primary" type="submit">Vérifier ma réponse</button>
+    </form>
+    <div id="feedback" aria-live="polite"></div>
+  `;
+
+  $("#content").innerHTML = `
+    <div class="study">
+      <p class="eyebrow">
+        ${escapeHTML(lesson.subject)} · ${index + 1} / ${lessons.length}
+      </p>
+      ${exercise}
+      <div class="study-controls">
+        <button id="previous">← Précédente</button>
+        <small>${escapeHTML(lesson.title)}</small>
+        <button id="next">Suivante →</button>
+      </div>
+    </div>
+  `;
+
+  $("#previous").onclick = () => {
+    index--;
+    flipped = false;
+    renderStudy();
+  };
+
+  $("#next").onclick = () => {
+    index++;
+    flipped = false;
+    renderStudy();
+  };
+
+  if (view === "cards") {
+    $("#flip").onclick = () => {
+      flipped = !flipped;
+      renderStudy();
+    };
+  } else {
+    $("#quiz-form").onsubmit = event => {
+      event.preventDefault();
+
+      const answer = $("#answer").value;
+      if (!answer.trim()) return;
+
+      const correct =
+        normalizeAnswer(answer) === normalizeAnswer(lesson.answer);
+
+      $("#feedback").innerHTML = `
+        <p class="feedback">
+          ${correct ? "✓ Bien joué !" : "Continue à t’entraîner !"}
+          La réponse attendue :
+          <strong>${escapeHTML(lesson.answer)}</strong>
+        </p>
+      `;
+    };
+  }
+}
+
+document.querySelectorAll(".nav").forEach(button => {
+  button.onclick = () => {
+    view = button.dataset.view;
+    index = 0;
+    flipped = false;
+
+    document.querySelectorAll(".nav").forEach(item => {
+      item.classList.toggle("active", item === button);
+    });
+
+    render();
+  };
+});
+
+$("#filters").onclick = event => {
+  const button = event.target.closest("[data-filter]");
+  if (!button) return;
+
+  filter = button.dataset.filter;
+
+  document.querySelectorAll("[data-filter]").forEach(item => {
+    item.classList.toggle("selected", item === button);
+  });
+
+  render();
+};
+
+$("#search").oninput = event => {
+  query = event.target.value.toLocaleLowerCase("fr").trim();
+  render();
+};
+
+$("#add").onclick = () => $("#editor").showModal();
+
+document.querySelectorAll(".close").forEach(button => {
+  button.onclick = () => button.closest("dialog").close();
+});
+
+$("#lesson-form").onsubmit = event => {
+  event.preventDefault();
+
+  const form = event.target;
+  const data = new FormData(form);
+  const lesson = {
+    id: Date.now().toString(36) + Math.random().toString(36).slice(2)
+  };
+
+  for (const key of ["title", "subject", "body", "question", "answer"]) {
+    lesson[key] = String(data.get(key)).trim();
+  }
+
+  if (["title", "body", "question", "answer"].some(key => !lesson[key])) {
+    alert("Remplis tous les champs avant d’enregistrer.");
+    return;
+  }
+
+  lessons.unshift(lesson);
+  save();
+
+  filter = "Toutes";
+  query = "";
+  $("#search").value = "";
+
+  document.querySelectorAll("[data-filter]").forEach(button => {
+    button.classList.toggle("selected", button.dataset.filter === "Toutes");
+  });
+
+  form.reset();
+  $("#editor").close();
+  render();
+};
+
+$("#content").addEventListener("click", event => {
+  const button = event.target.closest("[data-read]");
+  if (!button) return;
+
+  const lesson = lessons.find(item => item.id === button.dataset.read);
+  if (!lesson) return;
+
+  $("#reader-body").innerHTML = `
+    <h2>${escapeHTML(lesson.title)}</h2>
+    <p class="lesson-body">${escapeHTML(lesson.body)}</p>
+    <button class="primary" id="mark-done">
+      ${done.includes(lesson.id)
+        ? "Marquer comme à revoir"
+        : "✓ J’ai révisé cette leçon"}
+    </button>
+  `;
+
+  $("#mark-done").onclick = () => {
+    if (done.includes(lesson.id)) {
+      done = done.filter(id => id !== lesson.id);
+    } else {
+      done.push(lesson.id);
+    }
+
+    save();
+    $("#reader").close();
+    render();
+  };
+
+  $("#reader").showModal();
+});
+
+render();
+</script>
+</body>
+</html>
